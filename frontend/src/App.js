@@ -1,25 +1,26 @@
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect
-} from "react-router-dom";
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 
-// Components
-import UsersPage from "./users/pages/UsersPage";
-import NewPlace from "./places/pages/NewPlace";
+// Global
+import MainNavigation from './shared/components/Navigation/MainNavigation';
+
+// Pages
+import UsersPage from './users/pages/UsersPage';
+import NewPlace from './places/pages/NewPlace';
 
 function App() {
-  return (
-    <Router>
-      <Switch>
-        <Route exact path="/" component={UsersPage} />
-        <Route exact path="/places/new" component={NewPlace} />
-        <Redirect to="/" />
-      </Switch>
-    </Router>
-  );
+	return (
+		<Router>
+			<MainNavigation />
+			<main>
+				<Switch>
+					<Route exact path="/" component={UsersPage} />
+					<Route exact path="/places/new" component={NewPlace} />
+					<Redirect to="/" />
+				</Switch>
+			</main>
+		</Router>
+	);
 }
 
 export default App;
