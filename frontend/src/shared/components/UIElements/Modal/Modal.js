@@ -10,7 +10,7 @@ const Modal = props => {
 	return (
 		<>
 			{show && <Backdrop onClick={onCancel} />}
-			<CSSTransition in={show} mountOnEnter unmountOnExit time={200} classNames="modal">
+			<CSSTransition in={show} mountOnEnter unmountOnExit timeout={200} classNames="modal">
 				<ModalOverlay {...props} />
 			</CSSTransition>
 		</>

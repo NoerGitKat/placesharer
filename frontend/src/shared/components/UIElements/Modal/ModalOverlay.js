@@ -1,7 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const ModalOverlay = ({ className, style, headerClass, contentClass, footer, footerClass, onSubmit, header }) => {
+const ModalOverlay = ({
+	className,
+	style,
+	headerClass,
+	contentClass,
+	footer,
+	footerClass,
+	onSubmit,
+	header,
+	children,
+}) => {
 	const defaultFormHandler = event => event.preventDefault;
 	const domEl = document.getElementById('modal-hook');
 	const content = (
