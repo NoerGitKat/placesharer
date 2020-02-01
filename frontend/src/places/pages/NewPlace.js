@@ -6,7 +6,6 @@ import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from './../../shared/utils/val
 import './NewPlace.css';
 
 const formReducer = (state, action) => {
-	console.log('action', action);
 	switch (action.type) {
 		case 'INPUT_CHANGE':
 			let formIsValid = true;
@@ -42,6 +41,10 @@ const INITIAL_FORM_STATE = {
 			value: '',
 			isValid: false,
 		},
+		address: {
+			value: '',
+			isValid: false,
+		},
 		description: {
 			value: '',
 			isValid: false,
@@ -53,21 +56,33 @@ const INITIAL_FORM_STATE = {
 const NewPlace = () => {
 	const [formState, dispatch] = useReducer(formReducer, INITIAL_FORM_STATE);
 
-	// Helps manage validity and values of form
+	// Brings state up from child component
 	const inputHandler = useCallback((inputId, value, isValid) => {
 		dispatch({ type: 'INPUT_CHANGE', inputId, value, isValid });
 	}, []);
 
-	console.log('formState', formState);
+	const addPlaceHandler = event => {
+		event.preventDefault();
+		console.log(formState.inputs);
+	};
 
 	return (
-		<form className="place-form">
+		<form className="place-form" onSubmit={addPlaceHandler}>
 			<Input
 				id="title"
 				element="input"
 				type="text"
 				label="Title"
 				errorText="Please enter a valid title!"
+				validators={[VALIDATOR_REQUIRE()]}
+				onInputChange={inputHandler}
+			/>
+			<Input
+				id="address"
+				element="input"
+				type="text"
+				label="Address"
+				errorText="Please enter a valid address!"
 				validators={[VALIDATOR_REQUIRE()]}
 				onInputChange={inputHandler}
 			/>
