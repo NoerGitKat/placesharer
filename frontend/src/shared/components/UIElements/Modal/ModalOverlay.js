@@ -12,14 +12,14 @@ const ModalOverlay = ({
 	header,
 	children,
 }) => {
-	const defaultFormHandler = event => event.preventDefault;
+	const defaultFormHandler = event => event.preventDefault();
 	const domEl = document.getElementById('modal-hook');
 	const content = (
 		<div className={`modal ${className}`} style={style}>
 			<header className={`modal__header ${headerClass}`}>{header}</header>
 			<form onSubmit={onSubmit ? onSubmit : defaultFormHandler}>
 				<div className={`modal__content ${contentClass}`}>{children}</div>
-				<footer className={`modal__foter ${footerClass}`}>{footer}</footer>
+				<footer className={`modal__footer ${footerClass}`}>{footer}</footer>
 			</form>
 		</div>
 	);

@@ -6,6 +6,7 @@ import MainNavigation from './shared/components/Navigation/MainNavigation';
 
 // Pages
 import UsersPage from './users/pages/UsersPage';
+import AuthPage from './users/pages/AuthPage';
 import NewPlace from './places/pages/NewPlace';
 import EditPlace from './places/pages/EditPlace';
 import UserPlaces from './places/pages/UserPlaces';
@@ -20,6 +21,7 @@ function App() {
 					<Route exact path="/:userId/places" component={UserPlaces} />
 					<Route exact path="/places/new" component={NewPlace} />
 					<Route exact path="/places/:placeId" component={EditPlace} />
+					<Route exact path="/auth" component={AuthPage} />
 					<Redirect to="/" />
 				</Switch>
 			</main>
