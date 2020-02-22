@@ -7,10 +7,11 @@ import Button from './../../shared/components/FormElements/Button';
 
 import './AuthForm.css';
 
-const AuthForm = ({ isLoginMode, formState, inputHandler }) => {
+const AuthForm = ({ isLoginMode, formState, inputHandler, login }) => {
 	const authSubmitHandler = e => {
 		e.preventDefault();
 		console.log('logging in...', formState.inputs);
+		login();
 	};
 
 	return (
