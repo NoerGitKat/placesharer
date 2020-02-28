@@ -5,8 +5,12 @@ const placesRouter = express.Router();
 // Controllers
 const { getPlaceById } = require('./../controllers/places-controllers');
 const { getPlaceByUserId } = require('./../controllers/places-controllers');
+const { createPlace } = require('./../controllers/places-controllers');
 
-placesRouter.route('/').get((req, res) => res.status(200).json({ msg: 'it works!' }));
+placesRouter
+	.route('/')
+	.get((req, res) => res.json({ msg: 'it works!' }))
+	.post(createPlace);
 
 placesRouter.route('/:placeId').get(getPlaceById);
 

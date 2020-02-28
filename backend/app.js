@@ -1,17 +1,21 @@
 const express = require('express');
 const app = express();
 
-const errorHandler = require('./middlewares/errorHandler');
+const { errorHandler } = require('./middlewares/errorHandler');
+const { errorNoRoute } = require('./middlewares/errorHandler');
 
 // Routes
 const placeRouter = require('./routes/placeRouter.js');
 
 // Middlewares
 app.use(express.json());
-app.use(errorHandler);
 
 // Routes
 app.use('/api/places', placeRouter);
+
+// General error handling if route doesn't exist
+app.use(errorNoRoute);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
 
