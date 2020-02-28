@@ -6,12 +6,14 @@ const { errorNoRoute } = require('./middlewares/errorHandler');
 
 // Routes
 const placeRouter = require('./routes/placeRouter.js');
+const userRouter = require('./routes/userRouter.js');
 
 // Middlewares
 app.use(express.json());
 
 // Routes
 app.use('/api/places', placeRouter);
+app.use('/api/users', userRouter);
 
 // General error handling if route doesn't exist
 app.use(errorNoRoute);
