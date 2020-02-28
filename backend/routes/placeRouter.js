@@ -9,15 +9,19 @@ const { createPlace } = require('./../controllers/places-controllers');
 const { updatePlace } = require('./../controllers/places-controllers');
 const { deletePlace } = require('./../controllers/places-controllers');
 
+// Validators
+const validateCreatePlace = require('./../middlewares/validation/validateCreatePlace');
+const validateUpdatePlace = require('./../middlewares/validation/validateUpdatePlace');
+
 placesRouter
 	.route('/')
 	.get((req, res) => res.json({ msg: 'it works!' }))
-	.post(createPlace);
+	.post(validateCreatePlace, createPlace);
 
 placesRouter
 	.route('/:placeId')
 	.get(getPlaceById)
-	.patch(updatePlace)
+	.patch(validateUpdatePlace, updatePlace)
 	.delete(deletePlace);
 
 placesRouter.route('/user/:userId').get(getPlacesByUserId);

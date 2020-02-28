@@ -9,8 +9,7 @@ const errorHandler = (error, req, res, next) => {
 };
 
 const errorNoRoute = (req, res, next) => {
-	const error = new HttpError('Could not find this route', 404);
-	throw error;
+	throw new HttpError('Could not find this route', 404);
 };
 
 exports.errorHandler = errorHandler;

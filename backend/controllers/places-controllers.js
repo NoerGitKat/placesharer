@@ -1,5 +1,7 @@
 const uuid = require('uuid/v4');
+const { validationResult } = require('express-validator');
 const HttpError = require('./../models/http-error');
+const getCoordsForAddress = require('./../util/location');
 
 let DUMMY_PLACES = [
 	{
@@ -34,8 +36,7 @@ const getPlaceById = (req, res) => {
 	if (place) {
 		res.status(200).json(place);
 	} else {
-		const error = new HttpError('Could not find a place with the provided place ID!', 404);
-		throw error;
+		throw new HttpError('Could not find a place with the provided place ID!', 404);
 	}
 };
 
@@ -49,13 +50,26 @@ const getPlacesByUserId = (req, res, next) => {
 	if (places.length > 0) {
 		res.status(200).json(places);
 	} else {
-		const error = new HttpError('Could not find places with the provided user ID!', 404);
+		throw new HttpError('Could not find places with the provided user ID!', 404);
 		return next(error);
 	}
 };
 
-const createPlace = (req, res, next) => {
-	const { title, description, coordinates, address, creator } = req.body;
+const createPlace = async (req, res, next) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		console.log(errors);
+		next(new HttpError('The input is incorrect!'));
+	}
+
+	const { title, description, address, creator } = req.body;
+
+	let coordinates;
+	try {
+		coordinates = await getCoordsForAddress(address);
+	} catch (error) {
+		return next(error);
+	}
 
 	const createdPlace = { id: uuid(), title, description, location: coordinates, address, creator };
 
@@ -66,6 +80,11 @@ const createPlace = (req, res, next) => {
 };
 
 const updatePlace = (req, res, next) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		console.log(errors);
+		throw new HttpError('The input is incorrect!');
+	}
 	// Only allow title and description to be updated
 	const { title, description } = req.body;
 
@@ -88,6 +107,11 @@ const updatePlace = (req, res, next) => {
 
 const deletePlace = (req, res, next) => {
 	const { placeId } = req.params;
+
+	const foundPlace = DUMMY_PLACES.find(place => place.id === placeId);
+	if (!foundPlace) {
+		throw new HttpError('Place does not exist!');
+	}
 
 	DUMMY_PLACES = DUMMY_PLACES.filter(place => place.id !== placeId);
 
