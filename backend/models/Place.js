@@ -20,8 +20,9 @@ const placeSchema = new Schema({
 	},
 	location: { lat: { type: Number, required: true }, lng: { type: Number, required: true } },
 	creator: {
-		type: String,
+		type: mongoose.Types.ObjectId, // Id of related model
 		required: true,
+		ref: 'User',
 	},
 });
 
