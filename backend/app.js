@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const connectDB = require('./util/connectDB');
 
 const { errorHandler } = require('./middlewares/errorHandler');
 const { errorNoRoute } = require('./middlewares/errorHandler');
@@ -21,6 +22,8 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
-	console.log(`Listening to port ${PORT}!`);
-});
+connectDB(
+	app.listen(PORT, () => {
+		console.log(`Listening to port ${PORT}!`);
+	})
+);

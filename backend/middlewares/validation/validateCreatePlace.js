@@ -1,4 +1,4 @@
-const { check } = require('express');
+const { check } = require('express-validator');
 
 const validateCreatePlace = [
 	check('title')

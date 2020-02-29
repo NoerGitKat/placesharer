@@ -3,6 +3,7 @@ const express = require('express');
 const placesRouter = express.Router();
 
 // Controllers
+const { getAllPlaces } = require('./../controllers/places-controllers');
 const { getPlaceById } = require('./../controllers/places-controllers');
 const { getPlacesByUserId } = require('./../controllers/places-controllers');
 const { createPlace } = require('./../controllers/places-controllers');
@@ -15,7 +16,7 @@ const validateUpdatePlace = require('./../middlewares/validation/validateUpdateP
 
 placesRouter
 	.route('/')
-	.get((req, res) => res.json({ msg: 'it works!' }))
+	.get(getAllPlaces)
 	.post(validateCreatePlace, createPlace);
 
 placesRouter
