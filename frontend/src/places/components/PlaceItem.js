@@ -21,8 +21,6 @@ const PlaceItem = ({ image, title, description, address, id, coordinates }) => {
 	const closeDeleteHandler = () => setShowDelete(false);
 	const deletePlaceHandler = placeId => {
 		setShowDelete(false);
-		console.log('the id', placeId);
-		console.log('deleting place');
 	};
 
 	return (

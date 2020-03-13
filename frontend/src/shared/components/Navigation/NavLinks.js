@@ -7,8 +7,6 @@ import './NavLinks.css';
 const NavLinks = () => {
 	const { isLoggedIn, logout } = useContext(AuthContext);
 
-	console.log('isLoggedIn', isLoggedIn);
-
 	const userId = 'u1';
 	return (
 		<ul className="nav-links">

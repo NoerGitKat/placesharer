@@ -83,12 +83,12 @@ const logUserIn = async (req, res, next) => {
 		return next(error);
 	}
 
-	const isPasswordCorrect = comparePassword(password, identifiedUser.password);
-
 	if (!identifiedUser || !isPasswordCorrect) {
 		const error = new HttpError('Credentials are incorrect!', 401);
 		return next(error);
 	}
+
+	const isPasswordCorrect = comparePassword(password, identifiedUser.password);
 
 	const modifiedUser = identifiedUser.toObject({ getters: true });
 	res.status(200).json(modifiedUser);

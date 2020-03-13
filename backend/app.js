@@ -4,6 +4,7 @@ const connectDB = require('./util/connectDB');
 
 const { errorHandler } = require('./middlewares/errorHandler');
 const { errorNoRoute } = require('./middlewares/errorHandler');
+const enableCORS = require('./middlewares/enableCORS');
 
 // Routes
 const placeRouter = require('./routes/placeRouter.js');
@@ -11,6 +12,7 @@ const userRouter = require('./routes/userRouter.js');
 
 // Middlewares
 app.use(express.json());
+app.use(enableCORS);
 
 // Routes
 app.use('/api/places', placeRouter);
@@ -20,7 +22,7 @@ app.use('/api/users', userRouter);
 app.use(errorNoRoute);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 
 connectDB(
 	app.listen(PORT, () => {
