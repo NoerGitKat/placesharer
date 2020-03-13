@@ -7,7 +7,7 @@ import Button from './../../shared/components/FormElements/Button';
 
 import './AuthForm.css';
 
-const AuthForm = ({ isLoginMode, formState, inputHandler, login }) => {
+const AuthForm = ({ isLoginMode, formState, inputHandler, login, setIsLoading, setError }) => {
 	const authSubmitHandler = async e => {
 		e.preventDefault();
 
@@ -28,10 +28,19 @@ const AuthForm = ({ isLoginMode, formState, inputHandler, login }) => {
 			};
 
 			try {
+				setIsLoading(true);
 				const response = await fetch('http://localhost:5000/api/users/login', request);
 				const responseData = await response.json();
 				console.log('responseData in auth', responseData);
+
+				if (!response.ok) {
+					throw new Error(responseData.msg);
+				}
+				setIsLoading(false);
+				login();
 			} catch (err) {
+				setIsLoading(false);
+				setError(err.message || 'Something went wrong, please try again.');
 				console.log(err);
 			}
 		} else {
@@ -50,16 +59,24 @@ const AuthForm = ({ isLoginMode, formState, inputHandler, login }) => {
 			};
 
 			try {
+				setIsLoading(true);
 				const response = await fetch('/api/users/signup', request);
-				console.log('response in signup', response);
+
 				const responseData = await response.json();
-				console.log('responseData', responseData);
+
+				if (!response.ok) {
+					throw new Error(responseData.msg);
+				}
+
+				setIsLoading(false);
 			} catch (err) {
+				setIsLoading(false);
+				setError(err.message || 'Something went wrong, please try again.');
 				console.log(err);
 			}
 		}
 
-		// login();
+		setIsLoading(false);
 	};
 
 	return (

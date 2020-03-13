@@ -25,7 +25,6 @@ const getAllUsers = async (req, res, next) => {
 const createUser = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		console.log(errors);
 		const error = new HttpError('Make sure to pass in the correct data!', 422);
 		return next(error);
 	}
@@ -61,7 +60,6 @@ const createUser = async (req, res, next) => {
 		// Save user
 		await newUser.save();
 	} catch (err) {
-		console.log('err', err);
 		const error = new HttpError('Something went wrong, could not create user!', 500);
 		return next(error);
 	}
@@ -75,9 +73,11 @@ const logUserIn = async (req, res, next) => {
 	const { email, password } = req.body;
 
 	let identifiedUser;
+	let isPasswordCorrect;
 	try {
 		// Check if user exists
 		identifiedUser = await User.findOne({ email });
+		isPasswordCorrect = comparePassword(password, identifiedUser.password);
 	} catch (err) {
 		const error = new HttpError('Something went wrong, could not find user!', 500);
 		return next(error);
@@ -87,8 +87,6 @@ const logUserIn = async (req, res, next) => {
 		const error = new HttpError('Credentials are incorrect!', 401);
 		return next(error);
 	}
-
-	const isPasswordCorrect = comparePassword(password, identifiedUser.password);
 
 	const modifiedUser = identifiedUser.toObject({ getters: true });
 	res.status(200).json(modifiedUser);
