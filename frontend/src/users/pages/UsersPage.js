@@ -1,20 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import useHttpRequest from './../../shared/hooks/http-hook';
 
 import UsersList from './../components/UsersList';
+import LoadingSpinner from './../../shared/components/UIElements/LoadingSpinner';
+import ErrorModal from './../../shared/components/UIElements/Modal/ErrorModal';
 
 const UsersPage = () => {
-	const usersArr = [
-		{
-			id: 'u1',
-			name: 'Noer Paanakker',
-			image: 'https://pokecharms.com/data/attachment-files/2015/10/236933_Charmander_Picture.png',
-			placeCount: 3,
-		},
-	];
+	const [users, setUsers] = useState([]);
+	const { isLoading, error, clearError, sendRequest } = useHttpRequest();
+
+	const fetchUsers = async () => {
+		const url = '/api/users';
+		const responseData = await sendRequest(url);
+		setUsers(responseData);
+	};
+
+	// Fetch users before page loads, with empty [] only runs once
+	useEffect(() => {
+		fetchUsers();
+	}, []);
 
 	return (
 		<>
-			<UsersList users={usersArr} />
+			<ErrorModal error={error} onClear={clearError} />
+			{isLoading && <LoadingSpinner asOverlay />}
+			<UsersList users={users} />
 		</>
 	);
 };

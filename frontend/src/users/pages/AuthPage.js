@@ -1,5 +1,6 @@
 import React, { useState, useContext, Fragment } from 'react';
 import useForm from './../../shared/hooks/form-hook';
+import useHttpRequest from './../../shared/hooks/http-hook';
 
 import AuthContext from './../../shared/context/auth-context';
 
@@ -25,8 +26,58 @@ const AuthPage = () => {
 
 	const [formState, inputHandler, setFormData] = useForm(INITIAL_INPUTS, false);
 	const [isLoginMode, setIsLoginMode] = useState(true);
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState();
+	const { isLoading, error, clearError, sendRequest } = useHttpRequest();
+
+	const authSubmitHandler = async e => {
+		e.preventDefault();
+
+		const { name, email, password } = formState.inputs;
+
+		if (isLoginMode) {
+			const url = '/api/users/login';
+
+			const body = {
+				email: email.value,
+				password: password.value,
+			};
+
+			const request = {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(body),
+			};
+
+			const responseData = await sendRequest(url, request.method, request.body, request.headers);
+
+			if (responseData) {
+				login();
+			}
+		} else {
+			const url = '/api/users/signup';
+
+			const body = {
+				name: name.value,
+				email: email.value,
+				password: password.value,
+			};
+
+			const request = {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(body),
+			};
+
+			const responseData = sendRequest(url, request.method, request.body, request.headers);
+
+			if (responseData) {
+				// Redirect to account
+			}
+		}
+	};
 
 	const switchModeHandler = () => {
 		if (!isLoginMode) {
@@ -54,13 +105,9 @@ const AuthPage = () => {
 		setIsLoginMode(prevState => !prevState);
 	};
 
-	const errorHandler = () => {
-		setError(null);
-	};
-
 	return (
 		<Fragment>
-			<ErrorModal error={error} onClear={errorHandler} />
+			<ErrorModal error={error} onClear={clearError} />
 			<Card className="authentication">
 				{isLoading && <LoadingSpinner asOverlay />}
 				<h2>Authentication Required!</h2>
@@ -68,10 +115,8 @@ const AuthPage = () => {
 				<AuthForm
 					formState={formState}
 					inputHandler={inputHandler}
+					authSubmitHandler={authSubmitHandler}
 					isLoginMode={isLoginMode}
-					login={login}
-					setIsLoading={setIsLoading}
-					setError={setError}
 				/>
 				<Button inverse onClick={switchModeHandler}>
 					SWITCH TO {isLoginMode ? 'SIGNUP' : 'LOGIN'}

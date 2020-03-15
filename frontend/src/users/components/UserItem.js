@@ -6,7 +6,7 @@ import Avatar from './../../shared/components/UIElements/Avatar';
 import Card from './../../shared/components/UIElements/Card';
 
 const UserItem = ({ user }) => {
-	const { id, image, name, placeCount } = user;
+	const { id, image, name, places } = user;
 	return (
 		<li className="user-item">
 			<Card className="user-item__content">
@@ -17,7 +17,7 @@ const UserItem = ({ user }) => {
 					<div className="user-item__info">
 						<h2>{name}</h2>
 						<h3>
-							{placeCount} {placeCount.length === 1 ? 'Place' : 'Places'}
+							{places.length} {places.length === 1 ? 'Place' : 'Places'}
 						</h3>
 					</div>
 				</Link>
