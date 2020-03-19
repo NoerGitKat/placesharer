@@ -49,10 +49,11 @@ const AuthPage = () => {
 				body: JSON.stringify(body),
 			};
 
-			const responseData = await sendRequest(url, request.method, request.body, request.headers);
-
-			if (responseData) {
+			try {
+				const responseData = await sendRequest(url, request.method, request.body, request.headers);
 				login();
+			} catch (err) {
+				console.log('Error at login!', err);
 			}
 		} else {
 			const url = '/api/users/signup';
@@ -71,10 +72,11 @@ const AuthPage = () => {
 				body: JSON.stringify(body),
 			};
 
-			const responseData = sendRequest(url, request.method, request.body, request.headers);
-
-			if (responseData) {
-				// Redirect to account
+			try {
+				const responseData = await sendRequest(url, request.method, request.body, request.headers);
+				login();
+			} catch (err) {
+				console.log('Error at login!', err);
 			}
 		}
 	};

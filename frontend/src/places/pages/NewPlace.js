@@ -1,11 +1,10 @@
 import React from 'react';
-import Input from './../../shared/components/FormElements/Input';
-import Button from './../../shared/components/FormElements/Button';
 
-import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from './../../shared/utils/validators';
+import PlaceForm from './../components/PlaceForm';
+
 // Custom hook
 import useForm from './../../shared/hooks/form-hook';
-import './PlaceForm.css';
+import useHttpRequest from './../../shared/hooks/http-hook';
 
 const NewPlace = () => {
 	const initInputs = {
@@ -23,44 +22,38 @@ const NewPlace = () => {
 		},
 	};
 	const [formState, inputHandler] = useForm(initInputs, false);
+	const { isLoading, error, clearError, sendRequest } = useHttpRequest();
 
-	const addPlaceHandler = event => {
+	const addPlaceHandler = async event => {
 		event.preventDefault();
+
+		const { inputs } = formState;
+
+		const url = '/api/places';
+
+		const body = {
+			title: inputs.title,
+			description: inputs.description,
+			address: inputs.address,
+			creator: '5e6bc2b506c568d5eef0382e',
+		};
+
+		const request = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(body),
+		};
+
+		try {
+			const responseData = await sendRequest(url, request.method, request.body, request.headers);
+		} catch (err) {
+			console.log('Error at creating place!', err);
+		}
 	};
 
-	return (
-		<form className="place-form" onSubmit={addPlaceHandler}>
-			<Input
-				id="title"
-				element="input"
-				type="text"
-				label="Title"
-				errorText="Please enter a valid title!"
-				validators={[VALIDATOR_REQUIRE()]}
-				onInputChange={inputHandler}
-			/>
-			<Input
-				id="address"
-				element="input"
-				type="text"
-				label="Address"
-				errorText="Please enter a valid address!"
-				validators={[VALIDATOR_REQUIRE()]}
-				onInputChange={inputHandler}
-			/>
-			<Input
-				id="description"
-				element="textarea"
-				label="Description"
-				errorText="Please enter a valid description (at least 5 characters)!"
-				validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
-				onInputChange={inputHandler}
-			/>
-			<Button type="submit" disabled={!formState.isValid}>
-				Add place
-			</Button>
-		</form>
-	);
+	return <PlaceForm formState={formState} inputHandler={inputHandler} formHandler={addPlaceHandler} isAdd={true} />;
 };
 
 export default NewPlace;

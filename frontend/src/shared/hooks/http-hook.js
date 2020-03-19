@@ -7,7 +7,7 @@ const useHttpRequest = () => {
 	// Cancel ongoing HTTP Requests
 	const activeHttpRequests = useRef([]);
 
-	const sendRequest = useCallback(async (url, method = 'GET', body, headers = {}) => {
+	const sendRequest = useCallback(async (url, method = 'GET', body = null, headers = {}) => {
 		setIsLoading(true);
 		try {
 			// Add signal to ref
