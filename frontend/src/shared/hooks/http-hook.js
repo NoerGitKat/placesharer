@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 
 const useHttpRequest = () => {
+  // 2 states: loading, and error
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 

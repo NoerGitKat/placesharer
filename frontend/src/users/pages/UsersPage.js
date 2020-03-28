@@ -13,7 +13,7 @@ const UsersPage = () => {
     const url = "/api/users";
     try {
       const responseData = await sendRequest(url);
-      console.log("responseData", responseData);
+
       setUsers(responseData);
     } catch (err) {
       console.log("Error in fetching users!", err);

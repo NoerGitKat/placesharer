@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 
-import Card from "../../shared/components/UIElements/Card";
-import PlaceItem from "./PlaceItem";
-import Button from "./../../shared/components/FormElements/Button";
+import Card from '../../shared/components/UIElements/Card';
+import PlaceItem from './PlaceItem';
+import Button from './../../shared/components/FormElements/Button';
 
-import "./PlaceList.css";
+import './PlaceList.css';
 
 const PlaceList = ({ items }) => {
   if (items.length === 0) {
@@ -23,7 +23,7 @@ const PlaceList = ({ items }) => {
         <PlaceItem
           key={place.id}
           id={place.id}
-          image={place.imageUrl}
+          image={place.image}
           title={place.title}
           description={place.description}
           address={place.address}

@@ -1,104 +1,131 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-
+import React, { useState, useEffect, Fragment } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 
 import Card from './../../shared/components/UIElements/Card';
+import LoadingSpinner from './../../shared/components/UIElements/LoadingSpinner';
+import ErrorModal from './../../shared/components/UIElements/Modal/ErrorModal';
 import PlaceForm from './../components/PlaceForm';
 
-
-
 import useForm from './../../shared/hooks/form-hook';
-
-const DUMMY_PLACES = [
-	{
-		id: 'p1',
-		title: 'Empire State',
-		description: 'Famous shit right here!',
-		imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/10/Empire_State_Building_%28aerial_view%29.jpg',
-		address: '20 W 34th St, New York, NY 10001',
-		location: {
-			lat: 40.7484405,
-			lng: -73.9878584,
-		},
-		creator: 'u1',
-	},
-	{
-		id: 'p2',
-		title: 'Empire State 2',
-		description: 'Another famous shit right here!',
-		imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/10/Empire_State_Building_%28aerial_view%29.jpg',
-		address: '20 W 34th St, New York, NY 10001',
-		location: {
-			lat: 40.7484405,
-			lng: -73.9878584,
-		},
-		creator: 'u2',
-	},
-];
+import useHttpRequest from '../../shared/hooks/http-hook';
 
 const EditPlace = () => {
-	const [isLoading, setIsLoading] = useState(true);
-	const { placeId } = useParams();
+  const { placeId } = useParams();
+  const { push } = useHistory();
 
-	const identifiedPlace = DUMMY_PLACES.find(place => place.id === placeId);
+  const { isLoading, error, clearError, sendRequest } = useHttpRequest();
+  const [loadedPlace, setLoadedPlace] = useState({});
 
-	const initInputs = {
-		title: {
-			value: '',
-			isValid: true,
-		},
-		description: {
-			value: '',
-			isValid: true,
-		},
-	};
-	const [formState, inputHandler, setFormData] = useForm(initInputs, false);
+  const initInputs = {
+    title: {
+      value: '',
+      isValid: true
+    },
+    description: {
+      value: '',
+      isValid: true
+    }
+  };
+  const [formState, inputHandler, setFormData] = useForm(initInputs, false);
 
-	useEffect(() => {
-		if (identifiedPlace) {
-			setFormData(
-				{
-					title: {
-						value: identifiedPlace.title,
-						isValid: true,
-					},
-					description: {
-						value: identifiedPlace.description,
-						isValid: true,
-					},
-				},
-				true
-			);
-		}
-		setIsLoading(false);
-	}, [setFormData, identifiedPlace]);
+  useEffect(() => {
+    const getPlace = async () => {
+      const url = `/api/places/${placeId}`;
+      try {
+        const identifiedPlace = await sendRequest(url);
 
-	if (!identifiedPlace) {
-		return (
-			<div className="center">
-				<Card>
-					<h2>Couldn't find place!</h2>
-				</Card>
-			</div>
-		);
-	}
+        setLoadedPlace(identifiedPlace);
+        setFormData(
+          {
+            title: {
+              value: identifiedPlace.title,
+              isValid: true
+            },
+            description: {
+              value: identifiedPlace.description,
+              isValid: true
+            }
+          },
+          true
+        );
+      } catch (err) {
+        console.log('Could fetch place!', err);
+      }
+    };
+    getPlace();
+  }, [sendRequest, placeId, setFormData]);
 
-	const editPlaceSubmitHandler = e => {
-		e.preventDefault();
-	};
+  const editPlaceSubmitHandler = async e => {
+    e.preventDefault();
 
-	if (isLoading) {
-		return <div className="center">Loading...</div>;
-	}
+    const { title, description } = loadedPlace;
 
-	return (
-		<PlaceForm
-			formState={formState}
-			inputHandler={inputHandler}
-			formHandler={editPlaceSubmitHandler}
-			isAdd={false}
-		/>
-	);
+    const url = `/api/places/${placeId}`;
+
+    const body = {
+      title,
+      description
+    };
+
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+
+    const request = {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+      headers
+    };
+
+    try {
+      const response = await sendRequest(
+        url,
+        request.method,
+        request.body,
+        request.headers
+      );
+
+      push('/');
+    } catch (err) {
+      console.log('Could not edit place!', err);
+    }
+  };
+
+  if (isLoading) {
+    return <div className="center">Loading...</div>;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (!loadedPlace && !error) {
+    return (
+      <div className="center">
+        <Card>
+          <h2>Could not find place!</h2>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <Fragment>
+      <ErrorModal error={error} onClear={clearError} />
+      {!isLoading && loadedPlace && (
+        <PlaceForm
+          formState={formState}
+          inputHandler={inputHandler}
+          formHandler={editPlaceSubmitHandler}
+          isAdd={false}
+        />
+      )}
+    </Fragment>
+  );
 };
 
 export default EditPlace;

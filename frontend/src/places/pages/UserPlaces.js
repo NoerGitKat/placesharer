@@ -1,39 +1,46 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { Fragment, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-import PlaceList from '../components/PlaceList';
+import ErrorModal from "./../../shared/components/UIElements/Modal/ErrorModal";
+import LoadingSpinner from "./../../shared/components/UIElements/LoadingSpinner";
 
-const DUMMY_PLACES = [
-	{
-		id: 'p1',
-		title: 'Empire State',
-		description: 'Famous shit right here!',
-		imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/10/Empire_State_Building_%28aerial_view%29.jpg',
-		address: '20 W 34th St, New York, NY 10001',
-		location: {
-			lat: 40.7484405,
-			lng: -73.9878584,
-		},
-		creator: 'u1',
-	},
-	{
-		id: 'p2',
-		title: 'Empire State 2',
-		description: 'Another famous shit right here!',
-		imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/10/Empire_State_Building_%28aerial_view%29.jpg',
-		address: '20 W 34th St, New York, NY 10001',
-		location: {
-			lat: 40.7484405,
-			lng: -73.9878584,
-		},
-		creator: 'u2',
-	},
-];
+// Custom hooks
+import useHttpRequest from "./../../shared/hooks/http-hook";
+
+import PlaceList from "../components/PlaceList";
 
 const UserPlaces = () => {
-	const userId = useParams().userId;
-	const loadedPlaces = DUMMY_PLACES.filter(place => place.creator === userId);
-	return <PlaceList items={loadedPlaces} />;
+  const userId = useParams().userId;
+  const [userPlaces, setUserPlaces] = useState([]);
+
+  const { isLoading, error, clearError, sendRequest } = useHttpRequest();
+
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const url = `/api/places/user/${userId}`;
+
+        const request = {
+          method: "GET"
+        };
+
+        const response = await sendRequest(url, request.method);
+
+        setUserPlaces(response);
+      } catch (err) {
+        console.log("Could not get all user places!", err);
+      }
+    };
+    fetchPlaces();
+  }, [sendRequest]);
+
+  return (
+    <Fragment>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && <LoadingSpinner asOverlay />}
+      <PlaceList items={userPlaces} />
+    </Fragment>
+  );
 };
 
 export default UserPlaces;

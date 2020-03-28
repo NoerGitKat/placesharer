@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useContext, Fragment } from "react";
+import { useHistory } from "react-router-dom";
+
+import AuthContext from "./../../shared/context/auth-context";
 
 import PlaceForm from "./../components/PlaceForm";
+import ErrorModal from "./../../shared/components/UIElements/Modal/ErrorModal";
+import LoadingSpinner from "./../../shared/components/UIElements/LoadingSpinner";
 
 // Custom hook
 import useForm from "./../../shared/hooks/form-hook";
@@ -23,6 +28,8 @@ const NewPlace = () => {
   };
   const [formState, inputHandler] = useForm(initInputs, false);
   const { isLoading, error, clearError, sendRequest } = useHttpRequest();
+  const { userId } = useContext(AuthContext);
+  const { push } = useHistory();
 
   const addPlaceHandler = async event => {
     event.preventDefault();
@@ -31,19 +38,21 @@ const NewPlace = () => {
 
     const url = "/api/places";
 
+    const headers = {
+      "Content-Type": "application/json"
+    };
+
     const body = {
       title: inputs.title,
       description: inputs.description,
       address: inputs.address,
-      creator: "5e6bc2b506c568d5eef0382e"
+      creator: userId
     };
 
     const request = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      headers
     };
 
     try {
@@ -53,18 +62,25 @@ const NewPlace = () => {
         request.body,
         request.headers
       );
+
+      // Redirect to homepage
+      push("/");
     } catch (err) {
       console.log("Error at creating place!", err);
     }
   };
 
   return (
-    <PlaceForm
-      formState={formState}
-      inputHandler={inputHandler}
-      formHandler={addPlaceHandler}
-      isAdd={true}
-    />
+    <Fragment>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && <LoadingSpinner asOverlay />}
+      <PlaceForm
+        formState={formState}
+        inputHandler={inputHandler}
+        formHandler={addPlaceHandler}
+        isAdd={true}
+      />
+    </Fragment>
   );
 };
 

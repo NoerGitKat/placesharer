@@ -11,7 +11,7 @@ import LoadingSpinner from "./../../shared/components/UIElements/LoadingSpinner"
 import ErrorModal from "./../../shared/components/UIElements/Modal/ErrorModal";
 
 const AuthPage = () => {
-  const { isLoggedIn, login, logout } = useContext(AuthContext);
+  const { isLoggedIn, login, logout, userId } = useContext(AuthContext);
 
   const INITIAL_INPUTS = {
     email: {
@@ -56,7 +56,7 @@ const AuthPage = () => {
           request.body,
           request.headers
         );
-        login();
+        login(responseData.id);
       } catch (err) {
         console.log("Error at login!", err);
       }
