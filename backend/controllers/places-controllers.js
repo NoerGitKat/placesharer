@@ -151,6 +151,8 @@ const updatePlace = async (req, res, next) => {
   // Only allow title and description to be updated
   const { title, description } = req.body;
 
+  console.log('what is title', title);
+
   const { placeId } = req.params;
 
   let place;
@@ -167,6 +169,8 @@ const updatePlace = async (req, res, next) => {
   place.title = title;
   place.description = description;
 
+  console.log('what is place now', place);
+
   try {
     await place.save();
   } catch (err) {
@@ -178,6 +182,7 @@ const updatePlace = async (req, res, next) => {
   }
 
   const modifiedPlace = place.toObject({ getters: true });
+  console.log('modified place', modifiedPlace);
   res.status(200).json(modifiedPlace);
 };
 

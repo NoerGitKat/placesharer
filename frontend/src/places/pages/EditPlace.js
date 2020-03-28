@@ -1,5 +1,6 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, useContext, Fragment } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
+import AuthContext from './../../shared/context/auth-context';
 
 import Card from './../../shared/components/UIElements/Card';
 import LoadingSpinner from './../../shared/components/UIElements/LoadingSpinner';
@@ -10,6 +11,7 @@ import useForm from './../../shared/hooks/form-hook';
 import useHttpRequest from '../../shared/hooks/http-hook';
 
 const EditPlace = () => {
+  const { userId } = useContext(AuthContext);
   const { placeId } = useParams();
   const { push } = useHistory();
 
@@ -58,13 +60,15 @@ const EditPlace = () => {
   const editPlaceSubmitHandler = async e => {
     e.preventDefault();
 
-    const { title, description } = loadedPlace;
+    const {
+      inputs: { title, description }
+    } = formState;
 
     const url = `/api/places/${placeId}`;
 
     const body = {
-      title,
-      description
+      title: title.value,
+      description: description.value
     };
 
     const headers = {
@@ -85,7 +89,7 @@ const EditPlace = () => {
         request.headers
       );
 
-      push('/');
+      push(`/${userId}/places`);
     } catch (err) {
       console.log('Could not edit place!', err);
     }
