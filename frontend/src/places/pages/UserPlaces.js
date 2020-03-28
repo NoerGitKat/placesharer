@@ -1,13 +1,13 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { Fragment, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-import ErrorModal from "./../../shared/components/UIElements/Modal/ErrorModal";
-import LoadingSpinner from "./../../shared/components/UIElements/LoadingSpinner";
+import ErrorModal from './../../shared/components/UIElements/Modal/ErrorModal';
+import LoadingSpinner from './../../shared/components/UIElements/LoadingSpinner';
 
 // Custom hooks
-import useHttpRequest from "./../../shared/hooks/http-hook";
+import useHttpRequest from './../../shared/hooks/http-hook';
 
-import PlaceList from "../components/PlaceList";
+import PlaceList from '../components/PlaceList';
 
 const UserPlaces = () => {
   const userId = useParams().userId;
@@ -21,24 +21,31 @@ const UserPlaces = () => {
         const url = `/api/places/user/${userId}`;
 
         const request = {
-          method: "GET"
+          method: 'GET'
         };
 
         const response = await sendRequest(url, request.method);
 
         setUserPlaces(response);
       } catch (err) {
-        console.log("Could not get all user places!", err);
+        console.log('Could not get all user places!', err);
       }
     };
     fetchPlaces();
   }, [sendRequest]);
 
+  const onDeletePlace = deletedPlaceId => {
+    // After deleted place update state again to show all current places
+    setUserPlaces(prevPlaces =>
+      prevPlaces.filter(place => place.id !== deletedPlaceId)
+    );
+  };
+
   return (
     <Fragment>
       <ErrorModal error={error} onClear={clearError} />
       {isLoading && <LoadingSpinner asOverlay />}
-      <PlaceList items={userPlaces} />
+      <PlaceList items={userPlaces} onDeletePlace={onDeletePlace} />
     </Fragment>
   );
 };

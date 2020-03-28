@@ -6,7 +6,7 @@ import Button from './../../shared/components/FormElements/Button';
 
 import './PlaceList.css';
 
-const PlaceList = ({ items }) => {
+const PlaceList = ({ items, onDeletePlace }) => {
   if (items.length === 0) {
     return (
       <div className="place-list center">
@@ -22,13 +22,14 @@ const PlaceList = ({ items }) => {
       {items.map(place => (
         <PlaceItem
           key={place.id}
-          id={place.id}
+          placeId={place.id}
           image={place.image}
           title={place.title}
           description={place.description}
           address={place.address}
           creatorId={place.creator}
           coordinates={place.location}
+          onDeletePlace={onDeletePlace}
         />
       ))}
     </ul>
