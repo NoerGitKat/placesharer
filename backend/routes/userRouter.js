@@ -15,7 +15,7 @@ userRouter.route('/').get(getAllUsers);
 userRouter
   .route('/signup')
   .get((req, res) => res.json({ msg: 'GET signup route found!' }))
-  .post(validateSignup, uploadFile.single('image'), createUser);
+  .post(uploadFile.single('image'), validateSignup, createUser);
 userRouter.route('/login').post(logUserIn);
 
 module.exports = userRouter;

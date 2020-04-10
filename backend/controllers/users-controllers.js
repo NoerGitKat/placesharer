@@ -1,38 +1,39 @@
-const uuid = require("uuid");
-const { validationResult } = require("express-validator");
+const uuid = require('uuid');
+const { validationResult } = require('express-validator');
 
-const HttpError = require("./../models/http-error");
-const User = require("./../models/User");
+const HttpError = require('./../models/http-error');
+const User = require('./../models/User');
 
-const hashPassword = require("./../util/hashPassword");
-const comparePassword = require("./../util/comparePassword");
+const hashPassword = require('./../util/hashPassword');
+const comparePassword = require('./../util/comparePassword');
 
 const getAllUsers = async (req, res, next) => {
   let users;
 
   try {
     // Find all users, return without password
-    users = await User.find({}, "-password");
+    users = await User.find({}, '-password');
   } catch (err) {
     const error = new HttpError(
-      "Something went wrong, could not find users.",
+      'Something went wrong, could not find users.',
       500
     );
     return next(error);
   }
 
   // Respond with users in JS format
-  const modifiedUsers = users.map(user => user.toObject({ getters: true }));
+  const modifiedUsers = users.map((user) => user.toObject({ getters: true }));
   res.status(200).json(modifiedUsers);
 };
 
 const createUser = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new HttpError("Make sure to pass in the correct data!", 422);
+    const error = new HttpError('Make sure to pass in the correct data!', 422);
     return next(error);
   }
   const { name, email, password } = req.body;
+  const { path } = req.file;
 
   let emailExists;
   try {
@@ -40,7 +41,7 @@ const createUser = async (req, res, next) => {
     emailExists = await User.findOne({ email });
   } catch (err) {
     const error = new HttpError(
-      "Something went wrong, could not create user!",
+      'Something went wrong, could not create user!',
       500
     );
     return next(error);
@@ -48,7 +49,7 @@ const createUser = async (req, res, next) => {
 
   if (emailExists) {
     const error = new HttpError(
-      "Email already exists, please login instead!",
+      'Email already exists, please login instead!',
       422
     );
     return next(error);
@@ -61,9 +62,9 @@ const createUser = async (req, res, next) => {
   const newUser = new User({
     name,
     email,
-    image: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png",
+    image: path,
     password: hashedPassword,
-    places: []
+    places: [],
   });
 
   try {
@@ -71,7 +72,7 @@ const createUser = async (req, res, next) => {
     await newUser.save();
   } catch (err) {
     const error = new HttpError(
-      "Something went wrong, could not create user!",
+      'Something went wrong, could not create user!',
       500
     );
     return next(error);
@@ -93,14 +94,14 @@ const logUserIn = async (req, res, next) => {
     isPasswordCorrect = comparePassword(password, identifiedUser.password);
   } catch (err) {
     const error = new HttpError(
-      "Something went wrong, could not find user!",
+      'Something went wrong, could not find user!',
       500
     );
     return next(error);
   }
 
   if (!identifiedUser || !isPasswordCorrect) {
-    const error = new HttpError("Credentials are incorrect!", 401);
+    const error = new HttpError('Credentials are incorrect!', 401);
     return next(error);
   }
 

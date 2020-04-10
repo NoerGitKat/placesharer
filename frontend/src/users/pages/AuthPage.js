@@ -31,7 +31,7 @@ const AuthPage = () => {
   const authSubmitHandler = async (e) => {
     e.preventDefault();
 
-    const { name, email, password } = formState.inputs;
+    const { name, email, password, image } = formState.inputs;
 
     if (isLoginMode) {
       const url = '/api/users/login';
@@ -63,18 +63,18 @@ const AuthPage = () => {
     } else {
       const url = '/api/users/signup';
 
-      const body = {
-        name: name.value,
-        email: email.value,
-        password: password.value,
-      };
+      // Create FormData instance to send binary data
+      const formData = new FormData();
+
+      formData.append('name', name.value);
+      formData.append('email', email.value);
+      formData.append('password', password.value);
+      formData.append('image', image.value);
 
       const request = {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
+        headers: {},
+        body: formData,
       };
 
       try {
@@ -87,7 +87,7 @@ const AuthPage = () => {
 
         login();
       } catch (err) {
-        console.log('Error at login!', err);
+        console.log('Error at signup!', err);
       }
     }
   };

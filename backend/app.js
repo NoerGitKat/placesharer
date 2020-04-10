@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const app = express();
 const connectDB = require('./util/connectDB');
@@ -14,6 +15,9 @@ const userRouter = require('./routes/userRouter.js');
 app.use(express.json());
 app.use(enableCORS);
 
+// Whenever request hits this path, return static files
+app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+
 // Routes
 app.use('/api/places', placeRouter);
 app.use('/api/users', userRouter);
@@ -25,7 +29,7 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 connectDB(
-	app.listen(PORT, () => {
-		console.log(`Listening to port ${PORT}!`);
-	})
+  app.listen(PORT, () => {
+    console.log(`Listening to port ${PORT}!`);
+  })
 );

@@ -18,7 +18,6 @@ const AuthForm = ({
   inputHandler,
   authSubmitHandler,
 }) => {
-  console.log('formState', formState.inputs);
   return (
     <form onSubmit={authSubmitHandler}>
       {!isLoginMode && (

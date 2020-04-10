@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 const useHttpRequest = () => {
   // 2 states: loading, and error
@@ -9,7 +9,7 @@ const useHttpRequest = () => {
   const activeHttpRequests = useRef([]);
 
   const sendRequest = useCallback(
-    async (url, method = "GET", body = null, headers = {}) => {
+    async (url, method = 'GET', body = null, headers = {}) => {
       setIsLoading(true);
       // Add signal to ref
       const httpAbortCtrl = new AbortController();
@@ -20,13 +20,13 @@ const useHttpRequest = () => {
           method,
           body,
           headers,
-          signal: httpAbortCtrl.signal
+          signal: httpAbortCtrl.signal,
         });
 
         const responseData = await response.json();
 
         activeHttpRequests.current = activeHttpRequests.current.filter(
-          reqCtrl => reqCtrl !== httpAbortCtrl
+          (reqCtrl) => reqCtrl !== httpAbortCtrl
         );
 
         if (!response.ok) {
@@ -38,8 +38,8 @@ const useHttpRequest = () => {
         return responseData;
       } catch (err) {
         setIsLoading(false);
-        console.log("err", err);
-        setError(err.message || "Something went wrong, please try again");
+        console.log('err', err);
+        setError(err.message || 'Something went wrong, please try again');
         throw error;
       }
     },
@@ -54,7 +54,7 @@ const useHttpRequest = () => {
     // Clean up function
     return () => {
       // Aborts after every signal
-      activeHttpRequests.current.forEach(abortCtrl => abortCtrl.abort());
+      activeHttpRequests.current.forEach((abortCtrl) => abortCtrl.abort());
     };
   }, []);
 
