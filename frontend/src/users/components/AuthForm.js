@@ -3,11 +3,12 @@ import React from 'react';
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
-  VALIDATOR_EMAIL
+  VALIDATOR_EMAIL,
 } from './../../shared/utils/validators';
 
 import Input from './../../shared/components/FormElements/Input';
 import Button from './../../shared/components/FormElements/Button';
+import ImageUpload from './../../shared/components/FormElements/ImageUpload';
 
 import './AuthForm.css';
 
@@ -15,8 +16,9 @@ const AuthForm = ({
   isLoginMode,
   formState,
   inputHandler,
-  authSubmitHandler
+  authSubmitHandler,
 }) => {
+  console.log('formState', formState.inputs);
   return (
     <form onSubmit={authSubmitHandler}>
       {!isLoginMode && (
@@ -52,6 +54,9 @@ const AuthForm = ({
         validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
         onInputChange={inputHandler}
       />
+      {!isLoginMode && (
+        <ImageUpload id="image" centered="true" onInputChange={inputHandler} />
+      )}
       <Button type="submit" disabled={!formState.isValid}>
         {isLoginMode ? 'Login' : 'Signup'}
       </Button>

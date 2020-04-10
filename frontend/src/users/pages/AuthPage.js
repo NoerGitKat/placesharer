@@ -1,52 +1,52 @@
-import React, { useState, useContext, Fragment } from "react";
-import useForm from "./../../shared/hooks/form-hook";
-import useHttpRequest from "./../../shared/hooks/http-hook";
+import React, { useState, useContext, Fragment } from 'react';
+import useForm from './../../shared/hooks/form-hook';
+import useHttpRequest from './../../shared/hooks/http-hook';
 
-import AuthContext from "./../../shared/context/auth-context";
+import AuthContext from './../../shared/context/auth-context';
 
-import Card from "./../../shared/components/UIElements/Card";
-import AuthForm from "./../components/AuthForm";
-import Button from "./../../shared/components/FormElements/Button";
-import LoadingSpinner from "./../../shared/components/UIElements/LoadingSpinner";
-import ErrorModal from "./../../shared/components/UIElements/Modal/ErrorModal";
+import Card from './../../shared/components/UIElements/Card';
+import AuthForm from './../components/AuthForm';
+import Button from './../../shared/components/FormElements/Button';
+import LoadingSpinner from './../../shared/components/UIElements/LoadingSpinner';
+import ErrorModal from './../../shared/components/UIElements/Modal/ErrorModal';
 
 const AuthPage = () => {
   const { isLoggedIn, login, logout, userId } = useContext(AuthContext);
 
   const INITIAL_INPUTS = {
     email: {
-      value: "",
-      isValid: false
+      value: '',
+      isValid: false,
     },
     password: {
-      value: "",
-      isValid: false
-    }
+      value: '',
+      isValid: false,
+    },
   };
 
   const [formState, inputHandler, setFormData] = useForm(INITIAL_INPUTS, false);
   const [isLoginMode, setIsLoginMode] = useState(true);
   const { isLoading, error, clearError, sendRequest } = useHttpRequest();
 
-  const authSubmitHandler = async e => {
+  const authSubmitHandler = async (e) => {
     e.preventDefault();
 
     const { name, email, password } = formState.inputs;
 
     if (isLoginMode) {
-      const url = "/api/users/login";
+      const url = '/api/users/login';
 
       const body = {
         email: email.value,
-        password: password.value
+        password: password.value,
       };
 
       const request = {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       };
 
       try {
@@ -58,23 +58,23 @@ const AuthPage = () => {
         );
         login(responseData.id);
       } catch (err) {
-        console.log("Error at login!", err);
+        console.log('Error at login!', err);
       }
     } else {
-      const url = "/api/users/signup";
+      const url = '/api/users/signup';
 
       const body = {
         name: name.value,
         email: email.value,
-        password: password.value
+        password: password.value,
       };
 
       const request = {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       };
 
       try {
@@ -87,7 +87,7 @@ const AuthPage = () => {
 
         login();
       } catch (err) {
-        console.log("Error at login!", err);
+        console.log('Error at login!', err);
       }
     }
   };
@@ -99,7 +99,8 @@ const AuthPage = () => {
           // Make copy of prev formState
           ...formState.inputs,
           // Set name field to undefined, so the form validator can continue
-          name: undefined
+          name: undefined,
+          image: undefined,
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -108,14 +109,18 @@ const AuthPage = () => {
         {
           ...formState.inputs,
           name: {
-            value: "",
-            isValid: false
-          }
+            value: '',
+            isValid: false,
+          },
+          image: {
+            value: null,
+            isValid: false,
+          },
         },
         false
       );
     }
-    setIsLoginMode(prevState => !prevState);
+    setIsLoginMode((prevState) => !prevState);
   };
 
   return (
@@ -132,7 +137,7 @@ const AuthPage = () => {
           isLoginMode={isLoginMode}
         />
         <Button inverse onClick={switchModeHandler}>
-          SWITCH TO {isLoginMode ? "SIGNUP" : "LOGIN"}
+          SWITCH TO {isLoginMode ? 'SIGNUP' : 'LOGIN'}
         </Button>
       </Card>
     </Fragment>
