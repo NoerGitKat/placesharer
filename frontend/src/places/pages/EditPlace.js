@@ -11,7 +11,7 @@ import useForm from './../../shared/hooks/form-hook';
 import useHttpRequest from '../../shared/hooks/http-hook';
 
 const EditPlace = () => {
-  const { userId } = useContext(AuthContext);
+  const { userId, token } = useContext(AuthContext);
   const { placeId } = useParams();
   const { push } = useHistory();
 
@@ -21,32 +21,46 @@ const EditPlace = () => {
   const initInputs = {
     title: {
       value: '',
-      isValid: true
+      isValid: true,
     },
     description: {
       value: '',
-      isValid: true
-    }
+      isValid: true,
+    },
   };
   const [formState, inputHandler, setFormData] = useForm(initInputs, false);
 
   useEffect(() => {
     const getPlace = async () => {
       const url = `/api/places/${placeId}`;
+
+      const request = {
+        url,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
       try {
-        const identifiedPlace = await sendRequest(url);
+        const identifiedPlace = await sendRequest(
+          request.url,
+          request.method,
+          null,
+          request.headers
+        );
 
         setLoadedPlace(identifiedPlace);
         setFormData(
           {
             title: {
               value: identifiedPlace.title,
-              isValid: true
+              isValid: true,
             },
             description: {
               value: identifiedPlace.description,
-              isValid: true
-            }
+              isValid: true,
+            },
           },
           true
         );
@@ -57,28 +71,29 @@ const EditPlace = () => {
     getPlace();
   }, [sendRequest, placeId, setFormData]);
 
-  const editPlaceSubmitHandler = async e => {
+  const editPlaceSubmitHandler = async (e) => {
     e.preventDefault();
 
     const {
-      inputs: { title, description }
+      inputs: { title, description },
     } = formState;
 
     const url = `/api/places/${placeId}`;
 
     const body = {
       title: title.value,
-      description: description.value
+      description: description.value,
     };
 
     const headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     };
 
     const request = {
       method: 'PATCH',
       body: JSON.stringify(body),
-      headers
+      headers,
     };
 
     try {

@@ -23,7 +23,7 @@ const PlaceItem = ({
   onDeletePlace,
   creatorId,
 }) => {
-  const { isLoggedIn, userId } = useContext(AuthContext);
+  const { isLoggedIn, userId, token } = useContext(AuthContext);
   const { isLoading, error, clearError, sendRequest } = useHttpRequest();
 
   const [showMap, setShowMap] = useState(false);
@@ -37,7 +37,9 @@ const PlaceItem = ({
     const url = `/api/places/${placeId}`;
 
     const body = {};
-    const headers = {};
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
 
     const request = {
       method: 'DELETE',
