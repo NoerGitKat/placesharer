@@ -1,3 +1,4 @@
+const fs = require('fs');
 const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
 const HttpError = require('./../models/http-error');
@@ -104,8 +105,6 @@ const createPlace = async (req, res, next) => {
     creator,
   });
 
-  console.log('createdPlace', createdPlace);
-
   let user;
   // Store place in User
   try {
@@ -147,6 +146,7 @@ const updatePlace = async (req, res, next) => {
     const error = new HttpError('The input is incorrect!');
     return next(error);
   }
+
   // Only allow title and description to be updated
   const { title, description } = req.body;
 
@@ -167,8 +167,6 @@ const updatePlace = async (req, res, next) => {
 
   place.title = title;
   place.description = description;
-
-  console.log('what is place now', place);
 
   try {
     await place.save();
@@ -204,6 +202,9 @@ const deletePlace = async (req, res, next) => {
     return next(error);
   }
 
+  // Take path to remove place image from file system
+  const imagePath = place.image;
+
   try {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -218,6 +219,11 @@ const deletePlace = async (req, res, next) => {
     );
     return next(error);
   }
+
+  // Removes file from file system
+  fs.unlink(imagePath, (err) => {
+    console.log('Error in removing image from file system!', err);
+  });
 
   res.status(200).json({ msg: 'Place successfully deleted!' });
 };
