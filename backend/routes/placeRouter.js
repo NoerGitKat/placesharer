@@ -2,6 +2,9 @@ const express = require('express');
 
 const placesRouter = express.Router();
 
+// Middleware
+const uploadFile = require('./../middlewares/uploadFile');
+
 // Controllers
 const { getAllPlaces } = require('./../controllers/places-controllers');
 const { getPlaceById } = require('./../controllers/places-controllers');
@@ -15,15 +18,15 @@ const validateCreatePlace = require('./../middlewares/validation/validateCreateP
 const validateUpdatePlace = require('./../middlewares/validation/validateUpdatePlace');
 
 placesRouter
-	.route('/')
-	.get(getAllPlaces)
-	.post(validateCreatePlace, createPlace);
+  .route('/')
+  .get(getAllPlaces)
+  .post(uploadFile.single('image'), validateCreatePlace, createPlace);
 
 placesRouter
-	.route('/:placeId')
-	.get(getPlaceById)
-	.patch(validateUpdatePlace, updatePlace)
-	.delete(deletePlace);
+  .route('/:placeId')
+  .get(getPlaceById)
+  .patch(validateUpdatePlace, updatePlace)
+  .delete(deletePlace);
 
 placesRouter.route('/user/:userId').get(getPlacesByUserId);
 

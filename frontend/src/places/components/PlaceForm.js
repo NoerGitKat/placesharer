@@ -1,9 +1,10 @@
 import React from 'react';
 import Input from './../../shared/components/FormElements/Input';
+import ImageUpload from './../../shared/components/FormElements/ImageUpload';
 import Button from './../../shared/components/FormElements/Button';
 import {
   VALIDATOR_REQUIRE,
-  VALIDATOR_MINLENGTH
+  VALIDATOR_MINLENGTH,
 } from './../../shared/utils/validators';
 
 import './PlaceForm.css';
@@ -11,6 +12,9 @@ import './PlaceForm.css';
 const PlaceForm = ({ isAdd, formState, inputHandler, formHandler }) => {
   return (
     <form className="place-form" onSubmit={formHandler}>
+      {isAdd && (
+        <ImageUpload id="image" centered={true} onInputChange={inputHandler} />
+      )}
       <Input
         id="title"
         element="input"

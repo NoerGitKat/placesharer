@@ -65,7 +65,7 @@ const getPlacesByUserId = async (req, res, next) => {
 
   if (places.length > 0) {
     // Make "id" property available
-    const modifiedPlaces = places.map(place =>
+    const modifiedPlaces = places.map((place) =>
       place.toObject({ getters: true })
     );
     return res.status(200).json(modifiedPlaces);
@@ -86,6 +86,7 @@ const createPlace = async (req, res, next) => {
   }
 
   const { title, description, address, creator } = req.body;
+  const { path } = req.file;
 
   let coordinates;
   try {
@@ -95,14 +96,15 @@ const createPlace = async (req, res, next) => {
   }
 
   const createdPlace = new Place({
-    title: title.value,
-    description: description.value,
+    title: title,
+    description: description,
     location: coordinates,
-    image:
-      'https://www.se.com/nl/nl/assets/576/media/44518/560/87591358-490x280.jpg',
-    address: address.value,
-    creator
+    image: path,
+    address: address,
+    creator,
   });
+
+  console.log('createdPlace', createdPlace);
 
   let user;
   // Store place in User
@@ -122,13 +124,10 @@ const createPlace = async (req, res, next) => {
     // Save new place + save place id into user
     const session = await mongoose.startSession();
     session.startTransaction(); // Transactions let you execute multiple operations in isolation and potentially undo all the operations if one of them fails.
-
     await createdPlace.save({ session });
-    console.log('is it saved?');
     user.places.push(createdPlace); // Mongoose method to push document into array
     await user.save({ session });
     await session.commitTransaction();
-    console.log('is it finished?');
   } catch (err) {
     const error = new HttpError(
       'Failed to create new place, make sure to fill in all the fields correctly!',

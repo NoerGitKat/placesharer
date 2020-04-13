@@ -21,7 +21,7 @@ const PlaceItem = ({
   placeId,
   coordinates,
   onDeletePlace,
-  creatorId
+  creatorId,
 }) => {
   const { isLoggedIn, userId } = useContext(AuthContext);
   const { isLoading, error, clearError, sendRequest } = useHttpRequest();
@@ -33,7 +33,7 @@ const PlaceItem = ({
   const closeMapHandler = () => setShowMap(false);
   const openDeleteHandler = () => setShowDelete(true);
   const closeDeleteHandler = () => setShowDelete(false);
-  const deletePlaceHandler = async placeId => {
+  const deletePlaceHandler = async (placeId) => {
     const url = `/api/places/${placeId}`;
 
     const body = {};
@@ -42,7 +42,7 @@ const PlaceItem = ({
     const request = {
       method: 'DELETE',
       body,
-      headers
+      headers,
     };
 
     try {
@@ -94,7 +94,7 @@ const PlaceItem = ({
         <Card className="place-item__content">
           {isLoading && <LoadingSpinner asOverlay />}
           <div className="place-item__image">
-            <img src={image} alt={title} />
+            <img src={`http://localhost:5000/${image}`} alt={title} />
           </div>
           <div className="place-item__info">
             <h2>{title}</h2>
