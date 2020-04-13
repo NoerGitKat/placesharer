@@ -123,7 +123,7 @@ const logUserIn = async (req, res, next) => {
   }
 
   if (!identifiedUser || !isPasswordCorrect) {
-    const error = new HttpError('Credentials are incorrect!', 401);
+    const error = new HttpError('Credentials are incorrect!', 403);
     return next(error);
   }
 

@@ -18,7 +18,7 @@ const checkAuth = (req, res, next) => {
     req.userData = { userId: decodedToken.userId };
     next();
   } catch (err) {
-    const error = new HttpError('Authentication failed! Log in again.', 401);
+    const error = new HttpError('Authentication failed! Log in again.', 403);
     next(error);
   }
 

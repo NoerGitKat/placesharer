@@ -150,8 +150,6 @@ const updatePlace = async (req, res, next) => {
   // Only allow title and description to be updated
   const { title, description } = req.body;
 
-  console.log('what is title', title);
-
   const { placeId } = req.params;
 
   let place;
@@ -163,6 +161,11 @@ const updatePlace = async (req, res, next) => {
       500
     );
     return next(error);
+  }
+
+  if (place.creator.toString() !== req.userData.userId) {
+    const error = new HttpError('You are not allowed to edit this place!', 401);
+    next(error);
   }
 
   place.title = title;
@@ -200,6 +203,11 @@ const deletePlace = async (req, res, next) => {
   if (!place) {
     const error = new HttpError('Place does not exist!');
     return next(error);
+  }
+
+  if (place.creator.id !=== req.userData.userId) {
+    const error = new HttpError('You are not allowed to delete this place!', 401);
+    next(error);
   }
 
   // Take path to remove place image from file system
