@@ -1,5 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+
+// Context
+import AuthContext from './../../shared/context/auth-context';
 
 import ErrorModal from './../../shared/components/UIElements/Modal/ErrorModal';
 import LoadingSpinner from './../../shared/components/UIElements/LoadingSpinner';
@@ -10,7 +13,7 @@ import useHttpRequest from './../../shared/hooks/http-hook';
 import PlaceList from '../components/PlaceList';
 
 const UserPlaces = () => {
-  const userId = useParams().userId;
+  const { userId, token } = useContext(AuthContext);
   const [userPlaces, setUserPlaces] = useState([]);
 
   const { isLoading, error, clearError, sendRequest } = useHttpRequest();
@@ -21,10 +24,18 @@ const UserPlaces = () => {
         const url = `/api/places/user/${userId}`;
 
         const request = {
-          method: 'GET'
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         };
 
-        const response = await sendRequest(url, request.method);
+        const response = await sendRequest(
+          url,
+          request.method,
+          null,
+          request.headers
+        );
 
         setUserPlaces(response);
       } catch (err) {
@@ -34,10 +45,10 @@ const UserPlaces = () => {
     fetchPlaces();
   }, [sendRequest]);
 
-  const onDeletePlace = deletedPlaceId => {
+  const onDeletePlace = (deletedPlaceId) => {
     // After deleted place update state again to show all current places
-    setUserPlaces(prevPlaces =>
-      prevPlaces.filter(place => place.id !== deletedPlaceId)
+    setUserPlaces((prevPlaces) =>
+      prevPlaces.filter((place) => place.id !== deletedPlaceId)
     );
   };
 

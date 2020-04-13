@@ -32,7 +32,7 @@ const NewPlace = () => {
   };
   const [formState, inputHandler, setFormData] = useForm(initInputs, false);
   const { isLoading, error, clearError, sendRequest } = useHttpRequest();
-  const { userId } = useContext(AuthContext);
+  const { userId, token } = useContext(AuthContext);
   const { push } = useHistory();
 
   const addPlaceHandler = async (event) => {
@@ -54,7 +54,7 @@ const NewPlace = () => {
     const request = {
       method: 'POST',
       body: formData,
-      headers: {},
+      headers: { Authorization: `Bearer ${token}` },
     };
 
     try {
