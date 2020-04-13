@@ -4,6 +4,7 @@ const placesRouter = express.Router();
 
 // Middleware
 const uploadFile = require('./../middlewares/uploadFile');
+const checkAuth = require('./../middlewares/checkAuth');
 
 // Controllers
 const { getAllPlaces } = require('./../controllers/places-controllers');
@@ -17,14 +18,20 @@ const { deletePlace } = require('./../controllers/places-controllers');
 const validateCreatePlace = require('./../middlewares/validation/validateCreatePlace');
 const validateUpdatePlace = require('./../middlewares/validation/validateUpdatePlace');
 
+// Public routes
+placesRouter.get('/', getAllPlaces);
+placesRouter.get('/:placeId', getPlaceById);
+
+// Middleware checks for authentication
+placesRouter.use(checkAuth);
+
+// Private routes
 placesRouter
   .route('/')
-  .get(getAllPlaces)
   .post(uploadFile.single('image'), validateCreatePlace, createPlace);
 
 placesRouter
   .route('/:placeId')
-  .get(getPlaceById)
   .patch(validateUpdatePlace, updatePlace)
   .delete(deletePlace);
 

@@ -56,7 +56,8 @@ const AuthPage = () => {
           request.body,
           request.headers
         );
-        login(responseData.id);
+
+        login(responseData.userId, responseData.token);
       } catch (err) {
         console.log('Error at login!', err);
       }
@@ -85,7 +86,7 @@ const AuthPage = () => {
           request.headers
         );
 
-        login();
+        login(responseData.userId, responseData.token);
       } catch (err) {
         console.log('Error at signup!', err);
       }

@@ -1,4 +1,5 @@
 const uuid = require('uuid');
+const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 
 const HttpError = require('./../models/http-error');
@@ -55,8 +56,16 @@ const createUser = async (req, res, next) => {
     return next(error);
   }
 
-  // Hash password
-  const hashedPassword = hashPassword(password);
+  try {
+    // Hash password
+    const hashedPassword = await hashPassword(password);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not create user!',
+      500
+    );
+    return next(error);
+  }
 
   // Create new user
   const newUser = new User({
@@ -67,9 +76,17 @@ const createUser = async (req, res, next) => {
     places: [],
   });
 
+  let token;
   try {
     // Save user
     await newUser.save();
+
+    // Create an authentication token
+    token = jwt.sign(
+      { userId: newUser.id, email: newUser.email },
+      'supersecretman!',
+      { expiresIn: '1h' }
+    );
   } catch (err) {
     const error = new HttpError(
       'Something went wrong, could not create user!',
@@ -80,7 +97,9 @@ const createUser = async (req, res, next) => {
 
   const modifiedUser = newUser.toObject({ getters: true });
 
-  res.status(201).json(modifiedUser);
+  res
+    .status(201)
+    .json({ userId: modifiedUser.id, email: modifiedUser.email, token });
 };
 
 const logUserIn = async (req, res, next) => {
@@ -91,10 +110,13 @@ const logUserIn = async (req, res, next) => {
   try {
     // Check if user exists
     identifiedUser = await User.findOne({ email });
-    isPasswordCorrect = comparePassword(password, identifiedUser.password);
+    isPasswordCorrect = await comparePassword(
+      password,
+      identifiedUser.password
+    );
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong, could not find user!',
+      'Something went wrong, check your credentials and try again!',
       500
     );
     return next(error);
@@ -105,8 +127,27 @@ const logUserIn = async (req, res, next) => {
     return next(error);
   }
 
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: identifiedUser.id, email: identifiedUser.email },
+      'supersecretman!',
+      {
+        expiresIn: '1h',
+      }
+    );
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, check your credentials and try again!',
+      500
+    );
+    return next(error);
+  }
+
   const modifiedUser = identifiedUser.toObject({ getters: true });
-  res.status(200).json(modifiedUser);
+  res
+    .status(200)
+    .json({ userId: modifiedUser.id, email: modifiedUser.email, token });
 };
 
 exports.getAllUsers = getAllUsers;
