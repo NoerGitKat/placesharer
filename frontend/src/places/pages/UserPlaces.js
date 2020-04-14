@@ -13,7 +13,8 @@ import useHttpRequest from './../../shared/hooks/http-hook';
 import PlaceList from '../components/PlaceList';
 
 const UserPlaces = () => {
-  const { userId, token } = useContext(AuthContext);
+  const { userId } = useParams();
+  const { token } = useContext(AuthContext);
   const [userPlaces, setUserPlaces] = useState([]);
 
   const { isLoading, error, clearError, sendRequest } = useHttpRequest();

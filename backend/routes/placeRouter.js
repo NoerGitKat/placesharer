@@ -21,6 +21,7 @@ const validateUpdatePlace = require('./../middlewares/validation/validateUpdateP
 // Public routes
 placesRouter.get('/', getAllPlaces);
 placesRouter.get('/:placeId', getPlaceById);
+placesRouter.route('/user/:userId').get(getPlacesByUserId);
 
 // Middleware checks for authentication
 placesRouter.use(checkAuth);
@@ -34,7 +35,5 @@ placesRouter
   .route('/:placeId')
   .patch(validateUpdatePlace, updatePlace)
   .delete(deletePlace);
-
-placesRouter.route('/user/:userId').get(getPlacesByUserId);
 
 module.exports = placesRouter;

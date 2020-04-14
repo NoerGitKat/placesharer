@@ -65,7 +65,7 @@ const getPlacesByUserId = async (req, res, next) => {
   }
 
   if (places.length > 0) {
-    // Make "id" property available
+    // Make "id" property available by activating getters
     const modifiedPlaces = places.map((place) =>
       place.toObject({ getters: true })
     );
@@ -205,8 +205,11 @@ const deletePlace = async (req, res, next) => {
     return next(error);
   }
 
-  if (place.creator.id !=== req.userData.userId) {
-    const error = new HttpError('You are not allowed to delete this place!', 401);
+  if (place.creator.id !== req.userData.userId) {
+    const error = new HttpError(
+      'You are not allowed to delete this place!',
+      401
+    );
     next(error);
   }
 
