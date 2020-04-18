@@ -86,7 +86,8 @@ const createPlace = async (req, res, next) => {
     next(new HttpError('The input is incorrect!'));
   }
 
-  const { title, description, address, creator } = req.body;
+  const { title, description, address } = req.body;
+  const { userId } = req.userData;
   const { path } = req.file;
 
   let coordinates;
@@ -102,13 +103,13 @@ const createPlace = async (req, res, next) => {
     location: coordinates,
     image: path,
     address: address,
-    creator,
+    creator: userId,
   });
 
   let user;
   // Store place in User
   try {
-    user = await User.findById(creator);
+    user = await User.findById(userId);
   } catch (err) {
     const error = new HttpError('Something went wrong, can not find user', 500);
     return next(error);

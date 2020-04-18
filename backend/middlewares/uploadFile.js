@@ -1,5 +1,5 @@
 const multer = require('multer');
-const uuid = require('uuid/v1');
+const { v1: uuidv1 } = require('uuid');
 
 const MIME_TYPES = {
   'image/png': 'png',
@@ -15,7 +15,7 @@ const uploadFile = multer({
     },
     filename: (req, file, cb) => {
       const extension = MIME_TYPES[file.mimetype];
-      cb(null, `${uuid()}.${extension}`); // First argument is errors
+      cb(null, `${uuidv1()}.${extension}`); // First argument is errors
     },
     fileFilter: (req, file, cb) => {
       // Only accept image files

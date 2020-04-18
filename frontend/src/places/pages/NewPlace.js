@@ -32,7 +32,7 @@ const NewPlace = () => {
   };
   const [formState, inputHandler, setFormData] = useForm(initInputs, false);
   const { isLoading, error, clearError, sendRequest } = useHttpRequest();
-  const { userId, token } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
   const { push } = useHistory();
 
   const addPlaceHandler = async (event) => {
@@ -48,7 +48,6 @@ const NewPlace = () => {
     formData.append('title', inputs.title.value);
     formData.append('description', inputs.description.value);
     formData.append('address', inputs.address.value);
-    formData.append('creator', userId);
     formData.append('image', inputs.image.value);
 
     const request = {
