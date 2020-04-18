@@ -13,14 +13,20 @@ const userRouter = require('./routes/userRouter.js');
 
 // Middlewares
 app.use(express.json());
-app.use(enableCORS);
+app.use(enableCORS); // Only necessary if API is separate from client
 
 // Whenever request hits this path, return static files
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+app.use(express.static('../frontend/build'));
 
 // Routes
 app.use('/api/places', placeRouter);
 app.use('/api/users', userRouter);
+
+// Any request that enters will be served the React app
+app.use((req, res, next) => {
+  res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
+});
 
 // General error handling if route doesn't exist
 app.use(errorNoRoute);
