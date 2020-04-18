@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -9,12 +9,15 @@ import {
 // Global
 import MainNavigation from './shared/components/Navigation/MainNavigation';
 
+import LoadingSpinner from './shared/components/UIElements/LoadingSpinner';
+
 // Pages
-import UsersPage from './users/pages/UsersPage';
-import AuthPage from './users/pages/AuthPage';
-import NewPlace from './places/pages/NewPlace';
-import EditPlace from './places/pages/EditPlace';
-import UserPlaces from './places/pages/UserPlaces';
+/* eslint-disable import/first */
+const UsersPage = React.lazy(() => import('./users/pages/UsersPage'));
+const AuthPage = React.lazy(() => import('./users/pages/AuthPage'));
+const NewPlace = React.lazy(() => import('./places/pages/NewPlace'));
+const EditPlace = React.lazy(() => import('./places/pages/EditPlace'));
+const UserPlaces = React.lazy(() => import('./places/pages/UserPlaces'));
 
 // Context
 import AuthContext from './shared/context/auth-context';
@@ -54,7 +57,9 @@ function App() {
     >
       <Router>
         <MainNavigation />
-        <main>{routes}</main>
+        <main>
+          <Suspense fallback={LoadingSpinner}>{routes}</Suspense>
+        </main>
       </Router>
     </AuthContext.Provider>
   );
