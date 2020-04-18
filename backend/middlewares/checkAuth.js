@@ -12,7 +12,7 @@ const checkAuth = (req, res, next) => {
       throw new Error('Error at authentication!');
     }
 
-    const decodedToken = jwt.verify(token, 'supersecretman!');
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
     // If token is verified add to request logged in user data
     req.userData = { userId: decodedToken.userId };

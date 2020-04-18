@@ -84,7 +84,7 @@ const createUser = async (req, res, next) => {
     // Create an authentication token
     token = jwt.sign(
       { userId: newUser.id, email: newUser.email },
-      'supersecretman!',
+      process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
   } catch (err) {
@@ -131,7 +131,7 @@ const logUserIn = async (req, res, next) => {
   try {
     token = jwt.sign(
       { userId: identifiedUser.id, email: identifiedUser.email },
-      'supersecretman!',
+      process.env.JWT_SECRET,
       {
         expiresIn: '1h',
       }

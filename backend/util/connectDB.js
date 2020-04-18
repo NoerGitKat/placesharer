@@ -1,16 +1,16 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const connectDB = server => {
+const connectDB = (server) => {
   mongoose
     .connect(
-      "mongodb+srv://Noer:PrDBQHK6j7mShpjF@cluster0-jtuqz.mongodb.net/placesharer-dev?retryWrites=true&w=majority",
+      `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PW}@cluster0-jtuqz.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
       {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
       }
     )
     .then(() => server)
-    .catch(err => console.log("err happened in db connection!", err));
+    .catch((err) => console.log('err happened in db connection!', err));
 };
 
 module.exports = connectDB;

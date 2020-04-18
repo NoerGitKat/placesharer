@@ -23,7 +23,7 @@ import AuthContext from './shared/context/auth-context';
 import useAuth from './shared/hooks/auth-hook';
 
 function App() {
-  const { token, tokenExpirationTime, userId, login, logout } = useAuth();
+  const { token, userId, login, logout } = useAuth();
 
   let routes;
 
