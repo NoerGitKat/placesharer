@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-const DB_USER = process.env.DB_USER || 'Noer';
-const DB_PW = process.env.DB_PW || 'PrDBQHK6j7mShpjF';
-const DB_NAME = process.env.DB_NAME || 'placesharer-dev';
+const DB_USER = process.env.DB_USER;
+const DB_PW = process.env.DB_PW;
+const DB_NAME = process.env.DB_NAME;
 
 const connectDB = (server) => {
   mongoose
