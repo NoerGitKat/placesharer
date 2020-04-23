@@ -34,8 +34,10 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-connectDB(
+const server = () => {
   app.listen(PORT, () => {
     console.log(`Listening to port ${PORT}!`);
-  })
-);
+  });
+};
+
+connectDB(server);

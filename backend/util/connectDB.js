@@ -1,15 +1,19 @@
 const mongoose = require('mongoose');
 
+const DB_USER = process.env.DB_USER || 'Noer';
+const DB_PW = process.env.DB_PW || 'PrDBQHK6j7mShpjF';
+const DB_NAME = process.env.DB_NAME || 'placesharer-dev';
+
 const connectDB = (server) => {
   mongoose
     .connect(
-      `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PW}@cluster0-jtuqz.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
+      `mongodb+srv://${DB_USER}:${DB_PW}@cluster0-jtuqz.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       }
     )
-    .then(() => server)
+    .then(() => server())
     .catch((err) => console.log('err happened in db connection!', err));
 };
 
