@@ -56,12 +56,21 @@ const createUser = async (req, res, next) => {
     return next(error);
   }
 
+  let hashedPassword;
   try {
     // Hash password
-    const hashedPassword = await hashPassword(password);
+    hashedPassword = await hashPassword(password);
   } catch (err) {
     const error = new HttpError(
       'Something went wrong, could not create user!',
+      500
+    );
+    return next(error);
+  }
+
+  if (!hashedPassword || hashedPassword === password) {
+    const error = new HttpError(
+      'Something went wrong, could not hash password!',
       500
     );
     return next(error);

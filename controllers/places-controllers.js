@@ -183,7 +183,7 @@ const updatePlace = async (req, res, next) => {
   }
 
   const modifiedPlace = place.toObject({ getters: true });
-  console.log('modified place', modifiedPlace);
+
   res.status(200).json(modifiedPlace);
 };
 
